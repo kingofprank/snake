@@ -9,13 +9,28 @@ using namespace std;
 typedef int (*dll_fun)(int*);//注意这里有个声明形参的地方，而且这句话意义什么，以后要深究。
 giveplayer tmp;
 
+int getsec(){
+    struct tm *timeinfo;
+    time_t nowtime;
+    time(&nowtime);
+    timeinfo=localtime(&nowtime);
+    return timeinfo->tm_sec;
+}
+void ERROR_RECORD(int x){
+    FILE * fp=fopen("error.txt","w");
+    fprintf(fp,"%d\n",x);
+    fclose(fp);
+}
 void showmap(){
+    FILE *fp=fopen("record.txt","a");
+    fprintf(fp,"%d\n",tmp.mpsize);
     for (int i=0;i<tmp.mpsize;i++){
         for (int j=0;j<tmp.mpsize;j++)
-            cout<<tmp.smap[i][j];
-        cout<<endl;
+            fprintf(fp,"%d",tmp.smap[i][j]);
+        fprintf(fp,"\n");
     }
-    cout<<endl;
+    fprintf(fp,"\n");
+    fclose(fp);
 }
 void randomfood(){
     srand( (unsigned)time( NULL ) );
@@ -65,6 +80,7 @@ void getcmd(int *a){
     }
 }
 int RESULTA,RESULTB;
+time_t tt;
 int main(int argv,char * argc[])
 {
     HMODULE A,B;
@@ -98,6 +114,8 @@ int main(int argv,char * argc[])
         return 0;
     }
 
+    FILE *fp=fopen("record.txt","w");
+    fclose(fp);
     memset(tmp.smap,0,sizeof tmp.smap);
     tmp.mpsize=39;
     tmp.p1.body[1].x=tmp.mpsize-1;
@@ -114,15 +132,15 @@ int main(int argv,char * argc[])
     tmp.smap[tmp.mpsize-1][0]=tmp.smap[tmp.mpsize-2][0]=1;
     tmp.smap[tmp.mpsize-1][tmp.mpsize-1]=tmp.smap[tmp.mpsize-2][tmp.mpsize-1]=3;
 
-    FILE *fp=fopen("result.txt","w");
     int i;
-
     for (i=0;i<5000;i++){
+        showmap();
         if (i%100==0) randomfood();
         int cmd[10000];
         getcmd(cmd);
-        showmap();
         if (!RESULTA) {
+            ERROR_RECORD(1);
+            cout<<"Now "<<getsec()<<" 1"<<endl;
             int da=FUNA(cmd);
             if (da<0||da>3) {
                 RESULTA=tmp.p1.bodylen;
@@ -197,6 +215,8 @@ int main(int argv,char * argc[])
 
         getcmd(cmd);
         if (!RESULTB) {
+            ERROR_RECORD(2);
+            cout<<"Now "<<getsec()<<" 2"<<endl;
             int db=FUNB(cmd);
             if (db<0||db>3) {
                 RESULTA=tmp.p2.bodylen;
@@ -271,7 +291,16 @@ int main(int argv,char * argc[])
         if (RESULTA&&RESULTB) break;
     }
 
-    fclose(fp);
-    cout<<i<<endl;
+    cout<<"Game finished."<<endl;
+    cout<<"Player1:  "<<RESULTA<<endl;
+    cout<<"Player2:  "<<RESULTB<<endl;
+    if (RESULTA>RESULTB){
+        cout<<"Winner:player1"<<endl;
+    }
+    else {
+        if (RESULTA==RESULTB)
+            cout<<"Tie"<<endl;
+        else cout<<"Winner:player2"<<endl;
+    }
     return 0;
 }
