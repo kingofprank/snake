@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1457770737 source:c:\users\liu\desktop\snake\main.cpp
+	<stdio.h>
+	<string.h>
+	"main.h"
+
+1457771032 c:\users\liu\desktop\snake\main.h
+	<windows.h>
+
