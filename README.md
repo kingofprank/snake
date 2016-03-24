@@ -9,10 +9,11 @@
 ### 测试方法
 1. 将你写的程序生成dll（动态链接库），命名为player_1.dll或者player_2.dll。根据蛇的先后顺序确定是player_1还是player_2
 2. 将动态链接库拷贝到与shiyan.exe同一目录下。然后使用命令行运行shiyan.exe。
-``` 
-shiyan.exe player_1.dll player_2.dll
-```
-注意上述命令行参数，第一个是选手一的动态链接库，第二个是选手二的动态链接库。
+  ``` 
+    shiyan.exe player_1.dll player_2.dll
+  ```
+    注意上述命令行参数，第一个是选手一的动态链接库，第二个是选手二的动态链接库。
+
 3. 最后会输出结果，若要查看贪吃蛇的整个运动过程，请打开生成的result.txt文件。
 4. 图像生成程序已经完成，但仅在linux平台可用，若要使用result.txt生成动画，请关注近期即将发布的绘图程序。
 
